@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.daw.persistence.entities.Pedido;
 import com.daw.service.PedidoService;
+import com.daw.service.dto.PedidoDTO;
 import com.daw.service.exeptions.PedidoException;
 import com.daw.service.exeptions.PedidoNotFoundExecption;
 
@@ -26,8 +27,9 @@ public class PedidoController {
 	@Autowired
 	private PedidoService pedidoService;
 	
+	//CRUDs de Pedido
 	@GetMapping
-	public ResponseEntity<List<Pedido>> list(){
+	public ResponseEntity<List<PedidoDTO>> list(){
 		return ResponseEntity.ok(this.pedidoService.findAll());
 	}
 	
@@ -74,5 +76,32 @@ public class PedidoController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 		}
 	}
+	
+	//CRUDs de PizzaPedido
+	//findAll
+	@GetMapping("/{pedidoId}/pizzas")
+	public ResponseEntity<?> listPizzaPedido(@PathVariable int idPedido){
+		try {
+			return ResponseEntity.ok(this.pedidoService.findPizzasByIdPedido(idPedido));
+		}
+		catch(PedidoNotFoundExecption ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+		}
+	}
+	
+	//findById
+	
+	
+	//create
+	//update
+	//delete
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

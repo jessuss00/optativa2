@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.daw.persistence.entities.PizzaPedido;
 import com.daw.persistence.repositories.PizzaPedidoRepository;
+import com.daw.service.dto.PizzaPedidoOutputDTO;
+import com.daw.service.exeptions.PizzaNotFoundException;
+import com.daw.service.exeptions.PizzaPedidoNotFoundException;
+import com.daw.service.mappers.PizzaPedidoMapper;
 
 @Service
 public class PizzaPedidoService {
@@ -16,6 +20,48 @@ public class PizzaPedidoService {
 	
 	public List<PizzaPedido> findAll(){
 		return this.pizzaPedidoRepository.findAll();
+	}
+	
+	public PizzaPedido findById(int idPizzaPedido) {
+		if(!this.pizzaPedidoRepository.existsById(idPizzaPedido)) {
+			throw new PizzaPedidoNotFoundException("El ID indicado no existe. ");
+		}
+		
+		return this.pizzaPedidoRepository.findById(idPizzaPedido).get();
+	}
+	
+	public PizzaPedido create(PizzaPedido pizzaPedido) {
+		pizzaPedido.setId(0);
+		
+		return this.pizzaPedidoRepository.save(pizzaPedido);
+	}
+	
+	public PizzaPedido update(int idPizzaPedido, PizzaPedido pizzaPedido) {
+		if(idPizzaPedido != pizzaPedido.getId()) {
+			throw new PizzaPedidoNotFoundException("El ID del path y del body no coinciden. ");
+		}
+		
+		PizzaPedido pizzaPedidoBD = this.findById(idPizzaPedido);
+		pizzaPedidoBD.setIdPedido(pizzaPedido.getIdPedido());
+		pizzaPedidoBD.setIdPizza(pizzaPedido.getIdPizza());
+		pizzaPedidoBD.setPrecio(pizzaPedido.getPrecio());
+		pizzaPedidoBD.setCantidad(pizzaPedido.getCantidad());
+		
+		return this.pizzaPedidoRepository.save(pizzaPedidoBD);
+	}
+	
+	public void deleteById(int idPizzaPedido) {
+		if(!this.pizzaPedidoRepository.existsById(idPizzaPedido)) {
+			throw new PizzaNotFoundException("El ID indicado no existe. ");
+		}
+		
+		this.pizzaPedidoRepository.deleteById(idPizzaPedido);
+	}
+	
+	//CRUDs Controller Pedido
+	//findAll de PizzaPedido
+	public List<PizzaPedidoOutputDTO> findByIdPedido(int idPedido){
+		return PizzaPedidoMapper.toDtos(this.pizzaPedidoRepository.findByIdPedido(idPedido));
 	}
 	
 }
