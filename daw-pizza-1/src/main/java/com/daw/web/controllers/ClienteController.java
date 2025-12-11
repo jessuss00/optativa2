@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.daw.persistence.entities.Cliente;
 import com.daw.service.ClienteService;
-import com.daw.service.exeptions.ClienteExecption;
+import com.daw.service.exeptions.ClienteException;
 import com.daw.service.exeptions.ClienteNotFoundException;
-import com.daw.service.exeptions.PizzaNotFoundException;
 
 @RestController
 @RequestMapping("/clientes")
@@ -35,7 +34,7 @@ public class ClienteController {
 	@GetMapping("/{idCliente}")
 	public ResponseEntity<?> findById(@PathVariable int idCliente){
 		try {
-			return ResponseEntity.ok(this.clienteService.findById(idCliente));
+			return ResponseEntity.ok(this.clienteService.findDTOById(idCliente));
 		}
 		catch(ClienteNotFoundException ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
@@ -60,7 +59,7 @@ public class ClienteController {
 		catch(ClienteNotFoundException ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 		}
-		catch(ClienteExecption ex) {
+		catch(ClienteException ex) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
 		}
 	}
@@ -71,7 +70,7 @@ public class ClienteController {
 			this.clienteService.deleteById(idCliente);
 			return ResponseEntity.ok().build();
 		}
-		catch(PizzaNotFoundException ex) {
+		catch(ClienteNotFoundException ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 		}
 	}

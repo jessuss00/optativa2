@@ -5,7 +5,7 @@ public class PedidoException extends RuntimeException {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7239101262919209494L;
+	private static final long serialVersionUID = 3637820916404637424L;
 
 	public PedidoException(String message) {
 		super(message);

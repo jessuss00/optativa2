@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.daw.persistence.entities.Pedido;
 import com.daw.service.PedidoService;
 import com.daw.service.dto.PedidoDTO;
+import com.daw.service.dto.PizzaPedidoInputDTO;
 import com.daw.service.exeptions.PedidoException;
-import com.daw.service.exeptions.PedidoNotFoundExecption;
+import com.daw.service.exeptions.PedidoNotFoundException;
+import com.daw.service.exeptions.PizzaPedidoNotFoundException;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -38,7 +40,7 @@ public class PedidoController {
 		try {
 			return ResponseEntity.ok(this.pedidoService.findById(idPedido));
 		}
-		catch(PedidoNotFoundExecption ex) {
+		catch(PedidoNotFoundException ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 		}
 	}
@@ -58,7 +60,7 @@ public class PedidoController {
 		try {
 			return ResponseEntity.ok(this.pedidoService.update(idPedido, pedido));
 		}
-		catch(PedidoNotFoundExecption ex) {
+		catch(PedidoNotFoundException ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 		}
 		catch(PedidoException ex) {
@@ -72,29 +74,74 @@ public class PedidoController {
 			this.pedidoService.deleteById(idPedido);
 			return ResponseEntity.ok().build();
 		}
-		catch(PedidoNotFoundExecption ex) {
+		catch(PedidoNotFoundException ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 		}
 	}
 	
 	//CRUDs de PizzaPedido
 	//findAll
-	@GetMapping("/{pedidoId}/pizzas")
+	@GetMapping("/{idPedido}/pizzas")
 	public ResponseEntity<?> listPizzaPedido(@PathVariable int idPedido){
 		try {
 			return ResponseEntity.ok(this.pedidoService.findPizzasByIdPedido(idPedido));
 		}
-		catch(PedidoNotFoundExecption ex) {
+		catch(PedidoNotFoundException ex) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 		}
 	}
 	
 	//findById
-	
+	@GetMapping("/{idPedido}/pizzas/{idPizzaPedido}")
+	public ResponseEntity<?> findPizzaPedidoById(@PathVariable int idPedido, @PathVariable int idPizzaPedido){
+		try {
+			return ResponseEntity.ok(this.pedidoService.findPizzaPedidoById(idPedido, idPizzaPedido));
+		}
+		catch(PedidoNotFoundException ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+		}
+		catch(PizzaPedidoNotFoundException ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+		}		
+	}
 	
 	//create
+	@PostMapping("/{idPedido}/pizzas")
+	public ResponseEntity<?> create(@PathVariable int idPedido, @RequestBody PizzaPedidoInputDTO dto){
+		try {
+			return ResponseEntity.status(HttpStatus.CREATED).body(this.pedidoService.createPizzaPedido(idPedido, dto));
+		}
+		catch(PedidoNotFoundException ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+		}
+	}
 	//update
+	@PutMapping("/{idPedido}/pizzas/{idPizzaPedido}")
+	public ResponseEntity<?> update(@PathVariable int idPedido, @PathVariable int idPizzaPedido, @RequestBody PizzaPedidoInputDTO dto){
+		try {
+			return ResponseEntity.status(HttpStatus.CREATED).body(this.pedidoService.updatePizzaPedido(idPedido, idPizzaPedido, dto));
+		}
+		catch(PedidoNotFoundException ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+		}
+		catch(PizzaPedidoNotFoundException ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+		}		
+	}
 	//delete
+	@DeleteMapping("/{idPedido}/pizzas/{idPizzaPedido}")
+	public ResponseEntity<?> delete(@PathVariable int idPedido, @PathVariable int idPizzaPedido){
+		try {
+			this.pedidoService.deletePizzaPedidoById(idPedido, idPizzaPedido);
+			return ResponseEntity.ok().build();
+		}
+		catch(PedidoNotFoundException ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+		}
+		catch(PizzaPedidoNotFoundException ex) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+		}		
+	}
 	
 	
 	

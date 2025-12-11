@@ -2,8 +2,11 @@ package com.daw.persistence.entities;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,10 +40,11 @@ public class Cliente {
 	private String telefono;
 	
 	@OneToMany(mappedBy = "cliente")
+	@JsonIgnore
 	private List<Pedido> pedidos;
 	
+	@OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Direccion> direcciones;
 	
-	
-	
-
 }
